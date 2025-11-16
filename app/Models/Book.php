@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 
 class Book extends Model
@@ -16,7 +15,7 @@ class Book extends Model
     protected $fillable = [
         'title',
         'slug',
-        'author',
+        'author_id',
         'description',
         'isbn',
         'published_year',
@@ -26,7 +25,6 @@ class Book extends Model
         'category_id',
         'status',
         'file_path',
-        'total_copies',
     ];
 
     protected $casts = [
@@ -38,6 +36,11 @@ class Book extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(AuthorProfile::class, 'author_id');
     }
 
     public function ratings(): HasMany
@@ -63,11 +66,6 @@ class Book extends Model
     public function discussions(): HasMany
     {
         return $this->hasMany(BookDiscussion::class);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
     }
 
 
@@ -146,4 +144,4 @@ class Book extends Model
         return $query->orderBy('created_at', 'desc')->limit($limit);
     }
 
-} 
+}

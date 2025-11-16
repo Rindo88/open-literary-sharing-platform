@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite; // ← Tambahkan ini
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
-        // Redirect if already logged in
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
@@ -23,7 +23,6 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        // Redirect if already logged in
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
@@ -46,7 +45,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             
-            // Redirect based on user role
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'Selamat datang, Admin!');
             }
@@ -78,7 +76,6 @@ class AuthController extends Controller
             'agree_terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan',
         ]);
 
-        // Generate unique username from name
         $username = $this->generateUniqueUsername($request->name);
 
         $user = User::create([
@@ -86,7 +83,7 @@ class AuthController extends Controller
             'username' => $username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Default role
+            'role' => 'user',
         ]);
 
         Auth::login($user);
@@ -99,16 +96,12 @@ class AuthController extends Controller
         $userName = Auth::user()->name ?? 'User';
         
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect('/')->with('success', 'Anda berhasil logout. Sampai jumpa, ' . $userName . '!');
     }
 
-    /**
-     * Generate unique username from name
-     */
     private function generateUniqueUsername($name)
     {
         $baseUsername = Str::slug($name);
@@ -124,44 +117,50 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle Google OAuth callback
+     * ===== GOOGLE OAUTH SECTION =====
      */
-    public function handleGoogleCallback(Request $request)
+
+    // Redirect ke halaman login Google
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // Callback dari Google
+    public function handleGoogleCallback()
     {
         try {
-            // Get user data from Google
-            $googleUser = $request->all();
-            
-            // Check if user exists
-            $user = User::where('email', $googleUser['email'])->first();
-            
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            // Cek apakah user sudah ada
+            $user = User::where('email', $googleUser->getEmail())->first();
+
             if (!$user) {
-                // Create new user
-                $username = $this->generateUniqueUsername($googleUser['name']);
-                
+                // Buat user baru
                 $user = User::create([
-                    'name' => $googleUser['name'],
-                    'username' => $username,
-                    'email' => $googleUser['email'],
-                    'google_id' => $googleUser['id'] ?? null,
-                    'avatar' => $googleUser['picture'] ?? null,
-                    'password' => Hash::make(Str::random(16)), // Random password for OAuth users
+                    'name' => $googleUser->getName(),
+                    'username' => $this->generateUniqueUsername($googleUser->getName()),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'password' => Hash::make(Str::random(16)),
                     'role' => 'user',
                 ]);
             } else {
-                // Update existing user with Google info
+                // Update info Google jika ada
                 $user->update([
-                    'google_id' => $googleUser['id'] ?? $user->google_id,
-                    'avatar' => $googleUser['picture'] ?? $user->avatar,
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
                 ]);
             }
 
             Auth::login($user);
             return redirect()->route('dashboard')->with('success', 'Selamat datang, ' . $user->name . '!');
 
-        } catch (\Exception $e) {
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Gagal login dengan Google. Silakan coba lagi.']);
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('login.show')
+                ->withErrors(['google' => 'Gagal login dengan Google. Silakan coba lagi.']);
         }
     }
-} 
+}

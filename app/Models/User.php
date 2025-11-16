@@ -41,6 +41,11 @@ class User extends Authenticatable
         'birth_date' => 'date',
     ];
 
+    public function authorProfile()
+    {
+        return $this->hasOne(AuthorProfile::class);
+    }
+
     // Relationships
     public function userBooks()
     {

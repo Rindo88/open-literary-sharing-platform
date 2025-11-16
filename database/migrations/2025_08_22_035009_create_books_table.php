@@ -12,22 +12,21 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('author');
+            $table->foreignId('author_id')->constrained('author_profiles')->onDelete('cascade');
             $table->string('publisher');
-            $table->year('publication_year');
+            $table->year('published_year');
             $table->integer('pages');
+            $table->string('status')->default('published');
             $table->string('isbn')->nullable()->unique();
-            $table->text('synopsis');
+            $table->text('description');
             $table->string('cover_image')->nullable();
             $table->string('file_path')->nullable();
+
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_available')->default(true);
-            $table->integer('total_copies')->default(1);
-            $table->integer('available_copies')->default(1);
+
             $table->timestamps();
 
-            $table->index(['title', 'author']);
-            $table->index('category_id');
+            $table->index(['title', 'author_id', 'category_id']);
         });
     }
 

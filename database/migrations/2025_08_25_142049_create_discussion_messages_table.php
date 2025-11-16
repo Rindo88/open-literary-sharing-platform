@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('discussion_id')->constrained('book_discussions')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('message');
+            $table->string('type')->default('text');
             $table->json('attachments')->nullable(); // For future file attachments
             $table->boolean('is_edited')->default(false);
             $table->timestamp('edited_at')->nullable();

@@ -12,9 +12,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
-            $table->timestamp('start_time');
-            $table->timestamp('end_time')->nullable();
+            $table->timestamp('started_at');
+            $table->timestamp('ended_at')->nullable();
             $table->integer('duration')->nullable()->comment('in minutes');
+            $table->integer('pages_read')->nullable();
+            $table->text('notes')->nullable();
+            $table->integer('current_page')->default(1);
+            $table->integer('total_pages')->nullable();
+            $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
 
             $table->index(['user_id', 'book_id']);

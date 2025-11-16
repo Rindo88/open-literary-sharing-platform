@@ -15,17 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('discussion_id')->constrained('book_discussions')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('role', ['member', 'moderator', 'admin'])->default('member');
+            $table->enum('role', ['moderator', 'participant', 'viewer'])->default('participant');
             $table->timestamp('joined_at');
             $table->timestamp('last_read_at')->nullable();
             $table->boolean('is_muted')->default(false);
             $table->timestamps();
-            
+
             // Unique constraint
             $table->unique(['discussion_id', 'user_id']);
-            
+
             // Indexes
-            $table->index(['discussion_id', 'role']);
             $table->index('user_id');
         });
     }

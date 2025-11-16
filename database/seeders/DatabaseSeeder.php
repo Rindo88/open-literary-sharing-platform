@@ -17,20 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user first
-        if (!User::where('email', 'admin@perpustakaan.com')->exists()) {
-            User::create([
-                'name' => 'Administrator',
-                'email' => 'admin@perpustakaan.com',
-                'username' => 'admin',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-            ]);
-        }
+
 
         // Create categories
         $categories = [
-            ['name' => 'Fiksi', 'description' => 'Buku fiksi dan novel', 'color' => 'blue', 'icon' => '📚'],
+
             ['name' => 'Non-Fiksi', 'description' => 'Buku non-fiksi dan referensi', 'color' => 'green', 'icon' => '📖'],
             ['name' => 'Teknologi', 'description' => 'Buku teknologi dan komputer', 'color' => 'purple', 'icon' => '💻'],
             ['name' => 'Bisnis', 'description' => 'Buku bisnis dan ekonomi', 'color' => 'yellow', 'icon' => '💼'],
