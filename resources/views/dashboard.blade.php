@@ -483,7 +483,7 @@
                             {{ $book->title }}
                         </h3>
                         <p class="text-xs sm:text-sm text-gray-600 mb-2">
-                            {{ $book->author }}
+                            {{ $book->author->pen_name }}
                         </p>
                         
                         <!-- Rating -->

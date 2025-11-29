@@ -33,7 +33,7 @@
                 @endif
                 <div class="flex-1">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $book->title }}</h2>
-                    <p class="text-lg text-gray-600 mb-2">{{ $book->author }}</p>
+                    <p class="text-lg text-gray-600 mb-2">{{ $book->author->pen_name }}</p>
                     <p class="text-gray-500 text-sm mb-3">{{ $book->description ? Str::limit($book->description, 150) : 'Deskripsi tidak tersedia' }}</p>
                     <div class="flex items-center space-x-4 text-sm text-gray-600">
                         <span class="flex items-center">

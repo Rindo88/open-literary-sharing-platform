@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Rating;
 use App\Models\UserBook;
+use App\Models\AuthorProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,31 +16,38 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Book::with(['category', 'ratings']);
+        $query = Book::with(['ratings', 'author']);
 
-        // Filter by category
         if ($request->has('category') && $request->category != '') {
-            $query->where('category_id', $request->category);
-        }
-
-        // Search by title or author
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+            $cat = $request->category;
+            $query->where(function ($w) use ($cat) {
+                $w->whereJsonContains('categories', (int) $cat)
+                  ->orWhereJsonContains('categories', (string) $cat);
             });
         }
 
-        // Sort options
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('author', function ($aq) use ($search) {
+                      $aq->where('pen_name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'title':
                 $query->orderBy('title', 'asc');
                 break;
             case 'author':
-                $query->orderBy('author', 'asc');
+                $query->orderBy(
+                    AuthorProfile::select('pen_name')
+                        ->whereColumn('author_profiles.id', 'books.author_id'),
+                    'asc'
+                );
                 break;
             case 'rating':
                 $query->withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'desc');
@@ -59,29 +67,30 @@ class BookController extends Controller
     public function show($slug)
     {
         $book = Book::where('slug', $slug)
-                    ->with(['category', 'ratings.user', 'ratings'])
-                    ->firstOrFail();
+            ->with(['ratings.user', 'ratings'])
+            ->firstOrFail();
 
         // Get user's interaction with this book
         $userBook = null;
         $userRating = null;
-        
+
         if (Auth::check()) {
             $userBook = UserBook::where('user_id', Auth::id())
-                               ->where('book_id', $book->id)
-                               ->first();
-            
+                ->where('book_id', $book->id)
+                ->first();
+
             $userRating = Rating::where('user_id', Auth::id())
-                               ->where('book_id', $book->id)
-                               ->first();
+                ->where('book_id', $book->id)
+                ->first();
         }
 
         // Get related books
-        $relatedBooks = Book::where('category_id', $book->category_id)
-                           ->where('id', '!=', $book->id)
-                           ->with(['category', 'ratings'])
-                           ->limit(4)
-                           ->get();
+        $relatedBooks = Book::whereJsonContains('categories', $book->categories)
+            ->where('id', '!=', $book->id)
+            ->with('ratings')
+            ->limit(4)
+            ->get();
+
 
         return view('books.show', compact('book', 'userBook', 'userRating', 'relatedBooks'));
     }
@@ -89,9 +98,9 @@ class BookController extends Controller
     public function myBooks()
     {
         $userBooks = UserBook::where('user_id', Auth::id())
-                             ->with(['book.category', 'book.ratings'])
-                             ->orderBy('updated_at', 'desc')
-                             ->get();
+            ->with(['book.category', 'book.ratings'])
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         // Group by status
         $readingBooks = $userBooks->where('status', 'reading');
@@ -105,7 +114,7 @@ class BookController extends Controller
     {
         try {
             $book = Book::findOrFail($id);
-            
+
             UserBook::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
@@ -127,10 +136,10 @@ class BookController extends Controller
     {
         try {
             $book = Book::findOrFail($id);
-            
+
             $userBook = UserBook::where('user_id', Auth::id())
-                               ->where('book_id', $book->id)
-                               ->first();
+                ->where('book_id', $book->id)
+                ->first();
 
             if ($userBook) {
                 $userBook->update([
@@ -149,7 +158,7 @@ class BookController extends Controller
     {
         try {
             $book = Book::findOrFail($id);
-            
+
             UserBook::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
@@ -170,10 +179,10 @@ class BookController extends Controller
     {
         try {
             $book = Book::findOrFail($id);
-            
+
             UserBook::where('user_id', Auth::id())
-                    ->where('book_id', $book->id)
-                    ->delete();
+                ->where('book_id', $book->id)
+                ->delete();
 
             return redirect()->back()->with('success', 'Buku "' . $book->title . '" telah dihapus dari wishlist Anda.');
         } catch (\Exception $e) {
@@ -190,7 +199,7 @@ class BookController extends Controller
             ]);
 
             $book = Book::findOrFail($id);
-            
+
             Rating::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
@@ -214,7 +223,7 @@ class BookController extends Controller
     {
         try {
             $book = Book::findOrFail($id);
-            
+
             $bookmark = Bookmark::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
@@ -225,7 +234,7 @@ class BookController extends Controller
                 ]
             );
 
-            $message = $bookmark->wasRecentlyCreated 
+            $message = $bookmark->wasRecentlyCreated
                 ? 'Buku "' . $book->title . '" telah ditambahkan ke bookmark.'
                 : 'Buku "' . $book->title . '" telah dihapus dari bookmark.';
 
@@ -234,4 +243,4 @@ class BookController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengelola bookmark: ' . $e->getMessage());
         }
     }
-} 
+}

@@ -10,6 +10,7 @@ use App\Models\Book;
 use App\Models\UserBook;
 use App\Models\Category;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,6 +21,10 @@ class AuthorController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->authorProfile()->exists()) {
+            return redirect()->route('authors.dashboard')->with('error', 'Anda Sudah Terdaftar');
+        }
+
         return view('authors.create');
     }
 
@@ -88,7 +93,7 @@ class AuthorController extends Controller
                 'user_id' => auth()->id(),
             ], $data);
 
-            return redirect()->route('author.create')->with('success', 'Profil penulis berhasil disimpan.');
+            return redirect()->route('authors.dashboard')->with('success', 'Profil penulis berhasil disimpan.');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan profil: ' . $e->getMessage());
         }
@@ -125,7 +130,8 @@ class AuthorController extends Controller
             'published_year' => 'required|integer|min:1000|max:' . date('Y'),
             'pages' => 'required|integer',
             'description' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'categories' => 'required|array|min:1',
+            'categories.*' => 'integer|exists:categories,id',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'file_path' => 'nullable|file|mimes:pdf,epub',
             'isbn' => 'nullable|string|max:20',
@@ -142,6 +148,9 @@ class AuthorController extends Controller
                 $bookData['isbn'] = null;
             }
 
+            // Store categories as JSON array
+            $bookData['categories'] = json_encode($request->input('categories'));
+
             if ($request->hasFile('cover_image')) {
                 $bookData['cover_image'] = $request->file('cover_image')->store('covers', 'public');
             }
@@ -152,6 +161,7 @@ class AuthorController extends Controller
 
             // Set default status
             $bookData['status'] = 'published';
+            $bookData['author_id'] = Auth::user()->authorProfile->id;
 
             Book::create($bookData);
 
@@ -192,7 +202,7 @@ class AuthorController extends Controller
         $categories = Category::all();
         return view('authors.books.edit', compact('book', 'categories'));
     }
-    
+
     /**
      * Update an existing book.
      */

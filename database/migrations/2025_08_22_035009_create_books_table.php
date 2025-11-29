@@ -13,20 +13,19 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->foreignId('author_id')->constrained('author_profiles')->onDelete('cascade');
+            $table->text('description');
+            $table->string('isbn')->nullable()->unique();
             $table->string('publisher');
             $table->year('published_year');
             $table->integer('pages');
             $table->string('status')->default('published');
-            $table->string('isbn')->nullable()->unique();
-            $table->text('description');
             $table->string('cover_image')->nullable();
             $table->string('file_path')->nullable();
-
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->json('categories')->nullable();
 
             $table->timestamps();
 
-            $table->index(['title', 'author_id', 'category_id']);
+            $table->index(['title', 'author_id']);
         });
     }
 

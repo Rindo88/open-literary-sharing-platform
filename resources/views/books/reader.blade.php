@@ -447,7 +447,7 @@ z        color: var(--text-dark) !important;
                     </a>
                     <div class="min-w-0 flex-1">
                         <h1 class="text-lg sm:text-xl font-semibold text-gray-900 truncate">{{ $book->title }}</h1>
-                        <p class="text-xs sm:text-sm text-gray-600 truncate">oleh {{ $book->author }}</p>
+                        <p class="text-xs sm:text-sm text-gray-600 truncate">oleh {{ $book->author->pen_name }}</p>
                     </div>
                 </div>
                 
@@ -720,7 +720,7 @@ z        color: var(--text-dark) !important;
             <div class="bg-white rounded-lg shadow p-3 sm:p-4 md:p-6">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
                     <h3 class="text-base sm:text-lg font-medium text-gray-900">Diskusi Buku</h3>
-                    <a href="{{ route('books.discussions.index', $book) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+                    <a href="{{ route('discussions.index', $book) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
                         Lihat Semua →
                     </a>
                 </div>
@@ -737,20 +737,40 @@ z        color: var(--text-dark) !important;
                                 <p class="text-xs text-gray-600">Bagikan pemikiran dan diskusikan buku ini</p>
                             </div>
                         </div>
-                        <a href="{{ route('books.discussions.create', $book) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
+                        <a href="{{ route('discussions.create', $book) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
                             Mulai
                         </a>
                     </div>
-                    
-                    <div class="text-center py-4">
-                        <p class="text-sm text-gray-600 mb-3">Belum ada diskusi untuk buku ini</p>
-                        <a href="{{ route('books.discussions.create', $book) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Buat Diskusi Pertama
-                        </a>
-                    </div>
+
+                    @if(isset($discussions) && $discussions->count() > 0)
+                        <div class="space-y-2">
+                            @foreach($discussions as $discussion)
+                                <a href="{{ route('discussions.show', [$book, $discussion]) }}" class="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">{{ $discussion->title }}</p>
+                                            <p class="text-xs text-gray-600">Status: {{ ucfirst($discussion->status) }}</p>
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            @if($discussion->last_activity_at)
+                                                Terakhir: {{ $discussion->last_activity_at->diffForHumans() }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <p class="text-sm text-gray-600 mb-3">Belum ada diskusi untuk buku ini</p>
+                            <a href="{{ route('discussions.create', $book) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Buat Diskusi Pertama
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

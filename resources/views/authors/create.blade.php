@@ -37,24 +37,6 @@
                     @enderror
                 </div>
 
-                <div class="flex items-center space-x-3">
-                    <input type="checkbox" id="is_verified" name="is_verified" value="1" class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                           {{ old('is_verified') ? 'checked' : '' }}>
-                    <label for="is_verified" class="text-sm font-medium text-gray-700">Terverifikasi</label>
-                    @error('is_verified')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="verified_at" class="block text-sm font-medium text-gray-700">Tanggal Verifikasi</label>
-                    <input type="datetime-local" id="verified_at" name="verified_at" value="{{ old('verified_at') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    @error('verified_at')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 @php($categories = \App\Models\Category::all())
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Kategori</label>

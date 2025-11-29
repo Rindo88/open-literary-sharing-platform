@@ -116,21 +116,22 @@
                             @enderror
                         </div>
 
-                        <!-- Category -->
+                        <!-- Categories -->
                         <div>
-                            <label for="category_id" class="block text-sm font-medium text-gray-700">Kategori *</label>
-                            <select name="category_id" 
-                                    id="category_id" 
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                    required>
-                                <option value="">Pilih Kategori</option>
+                            <label class="block text-sm font-medium text-gray-700">Kategori *</label>
+                            <div class="mt-2 space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-md p-3 bg-white">
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" 
+                                               name="categories[]" 
+                                               value="{{ $category->id }}" 
+                                               {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}
+                                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2 text-sm text-gray-700">{{ $category->name }}</span>
+                                    </label>
                                 @endforeach
-                            </select>
-                            @error('category_id')
+                            </div>
+                            @error('categories')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

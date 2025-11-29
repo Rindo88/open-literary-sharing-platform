@@ -22,7 +22,7 @@ class Book extends Model
         'publisher',
         'pages',
         'cover_image',
-        'category_id',
+        'categories',
         'status',
         'file_path',
     ];
@@ -30,13 +30,9 @@ class Book extends Model
     protected $casts = [
         'published_year' => 'integer',
         'pages' => 'integer',
+        'categories' => 'array'
     ];
 
-    // Relationships
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     public function author(): BelongsTo
     {
@@ -70,6 +66,15 @@ class Book extends Model
 
 
     // Accessors
+    public function getCategoryListAttribute()
+    {
+        if (!is_array($this->categories)) {
+            return collect([]);
+        }
+
+        return Category::whereIn('id', $this->categories)->get();
+    }
+
     public function getAverageRatingAttribute(): float
     {
         return $this->ratings()->avg('rating') ?? 0.0;
@@ -85,7 +90,7 @@ class Book extends Model
         if (!auth()->check()) {
             return false;
         }
-        
+
         return $this->userBooks()
             ->where('user_id', auth()->id())
             ->where('status', 'wishlist')
@@ -97,11 +102,11 @@ class Book extends Model
         if (!auth()->check()) {
             return null;
         }
-        
+
         $userBook = $this->userBooks()
             ->where('user_id', auth()->id())
             ->first();
-            
+
         return $userBook ? $userBook->status : null;
     }
 
@@ -125,23 +130,22 @@ class Book extends Model
 
     public function scopeSearch($query, $search)
     {
-        return $query->where(function($q) use ($search) {
+        return $query->where(function ($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
-              ->orWhere('author', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('author', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
         });
     }
 
     public function scopeTopRated($query, $limit = 10)
     {
         return $query->withAvg('ratings', 'rating')
-                    ->orderBy('ratings_avg_rating', 'desc')
-                    ->limit($limit);
+            ->orderBy('ratings_avg_rating', 'desc')
+            ->limit($limit);
     }
 
     public function scopeLatest($query, $limit = 10)
     {
         return $query->orderBy('created_at', 'desc')->limit($limit);
     }
-
 }

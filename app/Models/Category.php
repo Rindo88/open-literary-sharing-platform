@@ -18,12 +18,6 @@ class Category extends Model
         'icon',
     ];
 
-    // Relationships
-    public function books(): HasMany
-    {
-        return $this->hasMany(Book::class);
-    }
-
     // Accessors
     public function getBookCountAttribute(): int
     {

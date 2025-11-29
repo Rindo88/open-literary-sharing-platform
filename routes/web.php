@@ -7,26 +7,18 @@ use App\Http\Controllers\Web\BookController;
 use App\Http\Controllers\Web\AdminCategoryController;
 use App\Http\Controllers\Web\AuthorController;
 
+// Authentication routes - TANPA middleware guest
+require __DIR__ . '/auth.php';
+
 // Public book routes - accessible
 Route::get('/', [BookController::class, 'index'])->name('books.index');
 Route::get('/books/{slug}', [BookController::class, 'show'])->name('books.show');
 
 // Author profile route - lebih spesifik
 Route::get('/author/{id}', [AuthorController::class, 'show'])->name('author.show');
-Route::get('/create', [AuthorController::class, 'create'])->name('author.create');
-Route::post('/create', [AuthorController::class, 'store'])->name('author.store');
+Route::get('/authors/create', [AuthorController::class, 'create'])->name('author.create');
+Route::post('authors/create', [AuthorController::class, 'store'])->name('author.store');
 
-// Authentication routes - TANPA middleware guest
-Route::prefix('auth')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register.show');
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
-
-    // Google OAuth routes
-    Route::get('/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
-    Route::get('/google/callback', [AuthController::class, 'handleGoogleCallback']);
-});
 
 // Protected routes - HANYA untuk user yang login
 Route::middleware('auth')->group(function () {
@@ -39,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [App\Http\Controllers\Web\ProfileController::class, 'show'])->name('profile.show');
         Route::get('/edit', [App\Http\Controllers\Web\ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/', [App\Http\Controllers\Web\ProfileController::class, 'updat'])->name('profile.update');
 
         // Password routes
         Route::get('/change-password', [App\Http\Controllers\Web\ProfileController::class, 'changePassword'])->name('profile.change-password');
@@ -83,8 +75,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [AuthorController::class, 'index'])->name('authors.profile');
         Route::get('/', [AuthorController::class, 'dashboard'])->name('authors.dashboard');
         Route::get('/books', [AuthorController::class, 'manageBooks'])->name('authors.books.index');
+        Route::post('/books/create', [AuthorController::class, 'storeBook'])->name('authors.books.store');
         Route::get('/books/create', [AuthorController::class, 'createBook'])->name('authors.books.create');
-        Route::post('/books', [AuthorController::class, 'storeBook'])->name('authors.books.store');
         Route::get('/books/{book}/edit', [AuthorController::class, 'editBook'])->name('authors.books.edit');
         Route::put('/books/{book}', [AuthorController::class, 'updateBook'])->name('authors.books.update');
         Route::delete('/books/{book}', [AuthorController::class, 'destroyBook'])->name('authors.books.destroy');

@@ -389,7 +389,6 @@
                             </svg>
                         </div>
                     </div>
-
                     <!-- User Section -->
                     @auth
                         <div class="flex items-center space-x-4">
@@ -470,6 +469,18 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    @else
+                        <!-- Login / Register Buttons for Guests -->
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ route('login.show') }}"
+                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                                Login
+                            </a>
+                            <a href="{{ route('register.show') }}"
+                                class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-200">
+                                Register
+                            </a>
                         </div>
                     @endauth
                 </div>

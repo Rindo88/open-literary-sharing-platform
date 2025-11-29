@@ -16,7 +16,7 @@ class BookReaderController extends Controller
     {
         try {
             $book = Book::where('slug', $slug)
-                        ->with(['category', 'ratings.user'])
+                        ->with(['author', 'ratings.user'])
                         ->firstOrFail();
 
             // Check if user has access to this book
@@ -61,7 +61,12 @@ class BookReaderController extends Controller
                 return redirect()->route('books.show', $slug)->with('error', 'File e-book tidak tersedia.');
             }
 
-            return view('books.reader', compact('book', 'readingSession'));
+            $discussions = $book->discussions()
+                ->orderBy('last_activity_at', 'desc')
+                ->limit(3)
+                ->get();
+
+            return view('books.reader', compact('book', 'readingSession', 'discussions'));
         } catch (\Exception $e) {
             return redirect()->route('books.index')->with('error', 'Terjadi kesalahan saat membuka buku: ' . $e->getMessage());
         }
