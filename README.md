@@ -1,61 +1,57 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LitShare — Perpustakaan Digital untuk Berbagi Karya Amatir
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+LitShare adalah aplikasi perpustakaan digital yang didesain khusus bagi penulis amatir untuk mengunggah dan berbagi karya mereka secara terbuka. Terinspirasi dari Scribd, LitShare menekankan keterbukaan, akses mudah, dan katalog modern yang nyaman dijelajahi.
 
-## About Laravel
+## Gambaran & Tujuan
+- Mendukung penulis amatir mempublikasikan naskah (buku, cerpen, esai) secara terbuka.
+- Memudahkan pembaca menemukan, menyimpan, dan mendiskusikan karya favorit.
+- Menumbuhkan komunitas pembaca/penulis melalui diskusi yang sehat.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
+- Katalog buku dengan pencarian dan kategori yang mudah dijelajahi.
+- Halaman utama menampilkan banner dan koleksi terbaru.
+- Berbagi/unggah karya (roadmap): upload naskah, atur metadata, terbitkan ke katalog.
+- Diskusi komunitas per karya (opsional sesuai konfigurasi).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prasyarat
+- PHP 8.2+ dan Composer.
+- Node.js 18+ dan npm.
+- Database MySQL/MariaDB atau SQLite.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalasi (GitHub)
+Ikuti langkah standar seperti README profesional di GitHub.
 
-## Learning Laravel
+1. Clone repository dan masuk ke folder proyek:
+   - `git clone <url_repo_github>`
+   - `cd <nama_folder_repo>`
+2. Install dependency backend dan frontend:
+   - Backend: `composer install`
+   - Frontend: `npm install`
+3. Salin file environment dari contoh:
+   - `cp .env.example .env`
+   - Atur nilai dasar seperti `APP_URL`, `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+4. Generate kunci aplikasi:
+   - `php artisan key:generate`
+5. Migrasi database:
+   - `php artisan migrate`
+6. Buat symbolic link untuk storage:
+   - `php artisan storage:link`
+7. Jalankan aplikasi:
+   - Frontend dev: `npm run dev` (opsional `npm run build` untuk produksi)
+   - Server PHP: `php artisan serve`
+8. Buka aplikasi:
+   - `http://127.0.0.1:8000/`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Menjalankan & Build
+- `php artisan serve` menjalankan server pengembangan.
+- `npm run dev` menjalankan Vite untuk hot-reload aset.
+- `npm run build` membundel aset produksi.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Troubleshooting
+- Ekstensi PHP: pastikan `pdo_mysql`, `openssl`, `fileinfo` aktif.
+- Aset tidak termuat: jalankan `npm run dev` atau `npm run build` dan cek `vite.config.js`.
+- Storage: jalankan `php artisan storage:link` jika file tidak dapat diakses.
+- Database: verifikasi kredensial di `.env` dan pastikan database tersedia.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Lisensi
+Proyek pembelajaran. Silakan gunakan dan modifikasi untuk kebutuhan edukasi.
