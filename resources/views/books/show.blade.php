@@ -82,7 +82,7 @@
         <nav class="flex mb-4 sm:mb-6" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('books.index') }}" class="text-gray-700 hover:text-gray-900 text-sm sm:text-base">
+                    <a href="{{ route('home.index') }}" class="text-gray-700 hover:text-gray-900 text-sm sm:text-base">
                         Katalog
                     </a>
                 </li>
@@ -124,12 +124,7 @@
                     <!-- Book Actions -->
                     @auth
                         <div class="space-y-2 sm:space-y-3">
-                            <!-- @if ($book->file_path)
-        <a href="{{ route('books.read', $book->slug) }}"
-                                       class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg text-center block">
-                                        📖 Baca Buku
-                                    </a>
-        @endif -->
+                            <!-- Di bagian Book Actions, perbaiki semua form actions: -->
 
                             @if ($userBook && $userBook->status === 'reading')
                                 <div class="space-y-2">
@@ -139,7 +134,8 @@
                                             📖 Lanjutkan Membaca
                                         </a>
                                     @endif
-                                    <form method="POST" action="{{ route('books.finish-reading', $book->slug) }}">
+                                    <!-- PERBAIKAN: gunakan route dengan parameter id -->
+                                    <form method="POST" action="{{ route('books.finish-reading', $book->id) }}">
                                         @csrf
                                         <button type="submit"
                                             class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base">
@@ -155,7 +151,8 @@
                                             📖 Baca Buku
                                         </a>
                                     @endif
-                                    <form method="POST" action="{{ route('books.start-reading', $book) }}">
+                                    <!-- PERBAIKAN: gunakan route dengan parameter id -->
+                                    <form method="POST" action="{{ route('books.start-reading', $book->id) }}">
                                         @csrf
                                         <button type="submit"
                                             class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base">
@@ -165,7 +162,8 @@
                                 </div>
                             @else
                                 <div class="space-y-2">
-                                    <form method="POST" action="{{ route('books.start-reading', $book) }}">
+                                    <!-- PERBAIKAN: gunakan route dengan parameter id -->
+                                    <form method="POST" action="{{ route('books.start-reading', $book->id) }}">
                                         @csrf
                                         <button type="submit"
                                             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base">
@@ -175,29 +173,9 @@
                                 </div>
                             @endif
 
-                            @if (!$userBook || $userBook->status !== 'wishlist')
-                                <form method="POST" action="{{ route('books.add-to-wishlist', $book) }}">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base">
-                                        ⭐ Tambah ke Wishlist
-                                    </button>
-                                </form>
-                            @else
-                                <form method="POST" action="{{ route('books.remove-from-wishlist', $book) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base">
-                                        ❌ Hapus dari Wishlist
-                                    </button>
-                                </form>
-                            @endif
-
-
-                            <!-- Discussion Button -->
-                            <a href="{{ route('discussions.show', $book) }}"
-                                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-center block flex items-center justify-center space-x-2 text-sm sm:text-base">
+                            <!-- PERBAIKAN: gunakan route dengan parameter id -->
+                            <a href="{{ route('discussions.show', $book->id) }}"
+                                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg text-center flex items-center justify-center space-x-2 text-sm sm:text-base">
                                 <span>💬 Diskusi Buku</span>
                             </a>
                         </div>
@@ -219,11 +197,28 @@
                     <div class="mb-4">
                         <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 leading-tight">
                             {{ $book->title }}</h1>
-                        <p class="text-lg sm:text-xl text-gray-600 mb-3">oleh {{ $book->author->pen_name }}</p>
+                                                    @php
+                            $isWishlist = $book->is_in_user_wishlist; // accessor kamu sudah ada
+                        @endphp
+
+                        <form id="wishlist-form-{{ $book->id }}"
+                            action="{{ $isWishlist ? route('books.remove-from-wishlist', $book->id) : route('books.add-to-wishlist', $book->id) }}"
+                            method="POST" class="inline">
+                            @csrf
+                            @if ($isWishlist)
+                                @method('DELETE')
+                            @endif
+
+                            <button type="submit" class="wishlist-btn text-2xl transition cursor-pointer"
+                                data-book-id="{{ $book->id }}">
+                                {!! $isWishlist ? '❤️' : '🤍' !!}
+                            </button>
+                        </form>
+                        <p class="text-lg sm:text-xl text-gray-600 mb-3">oleh <a href="{{ route('authors.profile', $book->author) }}" class="text-blue-400 underline font-bold">{{ $book->author->display_name }}</a></p>
                         <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                            @foreach ($book->category_list as $cat)
+                            @foreach ($categoryList as $category)
                                 <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-xs">
-                                    {{ $cat->name }}
+                                    {{ $category->name }}
                                 </span>
                             @endforeach
 
@@ -282,7 +277,8 @@
                         <!-- Add Rating Form -->
                         <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
                             <h4 class="font-medium text-gray-900 mb-2 sm:mb-3 text-sm sm:text-base">Berikan Rating Anda</h4>
-                            <form method="POST" action="{{ route('books.rate', $book) }}" class="space-y-3 sm:space-y-4">
+                            <form method="POST" action="{{ route('books.rate', $book->id) }}"
+                                class="space-y-3 sm:space-y-4">
                                 @csrf
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
@@ -444,5 +440,19 @@
                 }, 500);
             }
         }
+
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // biarkan form tetap submit ke controller
+                // TAPI kita update UI dulu sebelum redirect
+                const icon = btn.innerHTML.trim();
+
+                if (icon === '🤍') {
+                    btn.innerHTML = '❤️';
+                } else {
+                    btn.innerHTML = '🤍';
+                }
+            });
+        });
     </script>
 @endpush

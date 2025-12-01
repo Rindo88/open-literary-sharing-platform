@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Perpustakaan Digital')</title>
+    <title>@yield('title', 'Lit Share')</title>
+    @stack('meta')
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -322,6 +323,7 @@
             }
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="bg-gradient-to-br from-slate-50 via-white to-blue-50 min-h-screen">
@@ -331,7 +333,7 @@
             <div class="flex justify-between items-center h-16 lg:h-20">
                 <!-- Logo & Brand -->
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('books.index') }}" class="flex items-center space-x-3 group">
+                    <a href="{{ route('home.index') }}" class="flex items-center space-x-3 group">
                         <div class="relative">
                             <svg class="h-8 w-8 lg:h-10 lg:w-10 text-blue-600 logo-icon" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
@@ -343,9 +345,9 @@
                         <div>
                             <h1
                                 class="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                Perpustakaan Digital
+                                LitShare
                             </h1>
-                            <p class="text-xs text-gray-500 hidden lg:block">Modern Library System</p>
+                            <p class="text-xs text-gray-500 hidden lg:block">Multi-Sharing Library</p>
                         </div>
                     </a>
                 </div>
@@ -353,29 +355,30 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
                     <!-- Navigation Links -->
-                    @auth
+                    @php
+                        $isLanding = Route::is('landing') || Route::is('portfolio') || Route::is('portfolio.*');
+                    @endphp
+                    @if ($isLanding)
                         <div class="flex items-center space-x-6">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                                Dashboard
-                            </a>
-                            <a href="{{ route('books.my-books') }}"
-                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                                Buku Saya
-                            </a>
-                            <a href="{{ route('books.index') }}"
-                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                                Katalog
-                            </a>
+                            <a href="{{ route('landing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                            <a href="{{ route('landing') }}#tentang" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Tentang</a>
+                            <a href="{{ route('landing') }}#kontak" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Kontak</a>
+                            <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                            @stack('navbar_links')
                         </div>
                     @else
-                        <div class="flex items-center space-x-6">
-                            <a href="{{ route('books.index') }}"
-                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                                Katalog
-                            </a>
-                        </div>
-                    @endauth
+                        @auth
+                            <div class="flex items-center space-x-6">
+                                <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                                <a href="{{ route('books.my-books') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Buku Saya</a>
+                                <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                            </div>
+                        @else
+                            <div class="flex items-center space-x-6">
+                                <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                            </div>
+                        @endauth
+                    @endif
 
                     <!-- Search Bar -->
                     <div class="hidden lg:block">
@@ -441,14 +444,14 @@
                                             Profil Saya
                                         </a>
 
-                                        <a href="{{ route('authors.profile') }}"
+                                        <a href="{{ route('authors.dashboard') }}"
                                             class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                                             <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                             </svg>
-                                            Profil Penulis
+                                            Dashboard Penulis
                                         </a>
                                         
                                         <div class="border-t border-gray-100 mt-2 pt-2">
@@ -527,57 +530,78 @@
                     </div>
 
                     <!-- Navigation Links -->
-                    @auth
-                        <a href="{{ route('dashboard') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                            Dashboard
-                        </a>
-                        <a href="{{ route('books.my-books') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                            Buku Saya
-                        </a>
-                        <a href="{{ route('books.index') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            Katalog Buku
-                        </a>
+                    @php
+                        $isLanding = Route::is('landing') || Route::is('portfolio') || Route::is('portfolio.*');
+                    @endphp
+                    @if ($isLanding)
+                        <a href="{{ route('landing') }}"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Home</a>
+                        <a href="{{ route('landing') }}#tentang"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Tentang</a>
+                        <a href="{{ route('landing') }}#kontak"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Kontak</a>
+                        <a href="{{ route('home.index') }}"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Katalog Buku</a>
+                        @stack('navbar_links')
+                        @guest
+                            <a href="{{ route('login') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Login</a>
+                            <a href="{{ route('register') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 mobile-menu-item">Register</a>
+                        @endguest
                     @else
-                        <a href="{{ route('books.index') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            Katalog Buku
-                        </a>
-                        <a href="{{ route('login') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                            </svg>
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 mobile-menu-item">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                            Register
-                        </a>
-                    @endauth
+                        @auth
+                            <a href="{{ route('dashboard') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                                Dashboard
+                            </a>
+                            <a href="{{ route('books.my-books') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                Buku Saya
+                            </a>
+                            <a href="{{ route('home.index') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                Katalog Buku
+                            </a>
+                        @else
+                            <a href="{{ route('home.index') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                Katalog Buku
+                            </a>
+                            <a href="{{ route('login') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Login
+                            </a>
+                            <a href="{{ route('register') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                                Register
+                            </a>
+                        @endauth
+                    @endif
 
                     <!-- Mobile User Info -->
                     @auth

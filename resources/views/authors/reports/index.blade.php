@@ -114,7 +114,7 @@
                                         {{ $book->title }}
                                     </p>
                                     <p class="text-sm text-gray-500 truncate">
-                                        {{ $book->author }}
+                                        {{ $book->author->pen_name }}
                                     </p>
                                 </div>
                                 <div class="flex-shrink-0">

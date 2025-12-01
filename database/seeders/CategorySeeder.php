@@ -2,57 +2,72 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Models\Book;
+use App\Models\AuthorProfile;
+use App\Models\User;
 
-class CategorySeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Create categories
         $categories = [
-            [
-                'name' => 'Novel',
-                'slug' => 'novel',
-                'description' => 'Karya sastra prosa yang panjang',
-                'color' => 'blue',
-                'icon' => 'book-open'
-            ],
-            [
-                'name' => 'Pendidikan',
-                'slug' => 'pendidikan',
-                'description' => 'Buku-buku pendidikan dan pembelajaran',
-                'color' => 'green',
-                'icon' => 'academic-cap'
-            ],
-            [
-                'name' => 'Teknologi',
-                'slug' => 'teknologi',
-                'description' => 'Buku tentang teknologi dan komputer',
-                'color' => 'purple',
-                'icon' => 'chip'
-            ],
-            [
-                'name' => 'Bisnis',
-                'slug' => 'bisnis',
-                'description' => 'Buku tentang bisnis dan ekonomi',
-                'color' => 'yellow',
-                'icon' => 'briefcase'
-            ],
-            [
-                'name' => 'Sejarah',
-                'slug' => 'sejarah',
-                'description' => 'Buku tentang sejarah dan peradaban',
-                'color' => 'red',
-                'icon' => 'clock'
-            ]
+            ['name' => 'Fiksi', 'slug' => 'fiksi', 'icon' => '📖'],
+            ['name' => 'Non-Fiksi', 'slug' => 'non-fiksi', 'icon' => '📚'],
+            ['name' => 'Sains', 'slug' => 'sains', 'icon' => '🔬'],
+            ['name' => 'Teknologi', 'slug' => 'teknologi', 'icon' => '💻'],
+            ['name' => 'Sejarah', 'slug' => 'sejarah', 'icon' => '🏛️'],
+            ['name' => 'Biografi', 'slug' => 'biografi', 'icon' => '👤'],
         ];
 
         foreach ($categories as $category) {
             Category::create($category);
+        }
+
+        // Create a test user and author
+        $user = User::create([
+            'name' => 'Test Author',
+            'email' => 'author@test.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $author = AuthorProfile::create([
+            'user_id' => $user->id,
+            'pen_name' => 'Penulis Test',
+            'bio' => 'Penulis profesional',
+            'is_verified' => true,
+        ]);
+
+        // Create some test books
+        $books = [
+            [
+                'title' => 'Belajar Laravel untuk Pemula',
+                'slug' => 'belajar-laravel-untuk-pemula',
+                'author_id' => $author->id,
+                'description' => 'Buku panduan lengkap belajar Laravel dari dasar hingga mahir',
+                'publisher' => 'Penerbit Test',
+                'published_year' => 2024,
+                'pages' => 300,
+                'status' => 'published',
+                'categories' => [4, 2] // Teknologi, Non-Fiksi
+            ],
+            [
+                'title' => 'Sejarah Indonesia Modern',
+                'slug' => 'sejarah-indonesia-modern', 
+                'author_id' => $author->id,
+                'description' => 'Sejarah perkembangan Indonesia dari masa kemerdekaan hingga sekarang',
+                'publisher' => 'Penerbit Sejarah',
+                'published_year' => 2023,
+                'pages' => 450,
+                'status' => 'published',
+                'categories' => [5, 2] // Sejarah, Non-Fiksi
+            ],
+        ];
+
+        foreach ($books as $book) {
+            Book::create($book);
         }
     }
 }

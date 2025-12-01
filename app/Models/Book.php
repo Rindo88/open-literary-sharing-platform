@@ -34,6 +34,17 @@ class Book extends Model
     ];
 
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(AuthorProfile::class, 'author_id');
@@ -65,7 +76,23 @@ class Book extends Model
     }
 
 
+    public function scopeByCategory($query, $categorySlug)
+    {
+        return $query->whereJsonContains('categories', $categorySlug);
+    }
+
+
+    public function getTotalRatingsAttribute()
+    {
+        return $this->ratings()->count();
+    }
+
     // Accessors
+    public function getDiscussionsCountAttribute()
+    {
+        return $this->discussions()->count();
+    }
+
     public function getCategoryListAttribute()
     {
         if (!is_array($this->categories)) {
@@ -123,11 +150,6 @@ class Book extends Model
         return $query->where('status', 'published');
     }
 
-    public function scopeByCategory($query, $categoryId)
-    {
-        return $query->where('category_id', $categoryId);
-    }
-
     public function scopeSearch($query, $search)
     {
         return $query->where(function ($q) use ($search) {
@@ -147,5 +169,19 @@ class Book extends Model
     public function scopeLatest($query, $limit = 10)
     {
         return $query->orderBy('created_at', 'desc')->limit($limit);
+    }
+
+    // PERBAIKAN: Ambil category objects berdasarkan ID
+    public function getCategoryObjectsAttribute()
+    {
+        if (!$this->categories) return collect();
+
+        return Category::whereIn('id', $this->categories)->get();
+    }
+
+    // Untuk backward compatibility
+    public function getCategoryNamesAttribute()
+    {
+        return $this->categoryObjects->pluck('name');
     }
 }

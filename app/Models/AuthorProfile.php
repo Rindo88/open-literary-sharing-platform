@@ -15,15 +15,29 @@ class AuthorProfile extends Model
         'verified_at',
         'categories',
     ];
-    
+
     protected $casts = [
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
         'categories' => 'array',
     ];
-        
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function books()
+    {
+        return $this->hasMany(Book::class, 'author_id');
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->pen_name ?? $this->user->name;
+    }
+
+    public function getVerifiedBadgeAttribute()
+    {
+        return $this->is_verified ? '✅ Verified Author' : null;
     }
 }

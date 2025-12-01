@@ -17,11 +17,17 @@ class Category extends Model
         'color',
         'icon',
     ];
+    
+    public function books()
+    {
+        return Book::published()->whereJsonContains('categories', $this->id);
+    }
 
     // Accessors
-    public function getBookCountAttribute(): int
+    // Count books untuk withCount
+    public function getBooksCountAttribute()
     {
-        return $this->books()->count();
+        return Book::published()->whereJsonContains('categories', $this->id)->count();
     }
 
     public function getAverageRatingAttribute(): float

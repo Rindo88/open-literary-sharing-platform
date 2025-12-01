@@ -442,7 +442,7 @@ z        color: var(--text-dark) !important;
         <div class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-3 sm:py-4 space-y-3 sm:space-y-0">
                 <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
-                    <a href="{{ route('books.show', $book->slug) }}" class="text-gray-600 hover:text-gray-900 flex-shrink-0">
+                    <a href="{{ route('books.show', ['type' => 'book', 'id' => $book->id]) }}" class="text-gray-600 hover:text-gray-900 flex-shrink-0">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </a>
                     <div class="min-w-0 flex-1">
@@ -509,7 +509,7 @@ z        color: var(--text-dark) !important;
                             </svg>
                         </button>
                         
-                        <form action="{{ route('books.finish-reading', $book->slug) }}" method="POST" class="inline">
+                        <form action="{{ route('books.finish-reading', $book->id) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-xs sm:text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200">
                                 <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

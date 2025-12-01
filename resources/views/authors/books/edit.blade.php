@@ -1,8 +1,8 @@
-@extends('layouts.admin')
+@extends('layouts.author')
 
 @section('title', 'Edit ' . $book->title)
 
-@section('admin-content')
+@section('authors-content')
 <div class="min-h-screen bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
@@ -12,7 +12,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Edit Buku</h1>
                     <p class="mt-2 text-gray-600">{{ $book->title }}</p>
                 </div>
-                <a href="{{ route('admin.books.index') }}" 
+                <a href="{{ route('authors.books.index') }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7 7-7"></path>
@@ -24,7 +24,7 @@
 
         <!-- Form -->
         <div class="bg-white shadow rounded-lg">
-            <form action="{{ route('admin.books.update', $book) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+            <form action="{{ route('authors.books.update', $book) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
                 @csrf
                 @method('PUT')
                 
@@ -41,20 +41,6 @@
                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                    required>
                             @error('title')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Author -->
-                        <div>
-                            <label for="author" class="block text-sm font-medium text-gray-700">Penulis *</label>
-                            <input type="text" 
-                                   name="author" 
-                                   id="author" 
-                                   value="{{ old('author', $book->author) }}"
-                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                   required>
-                            @error('author')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -291,7 +277,7 @@
 
                 <!-- Submit Buttons -->
                 <div class="flex justify-between">
-                    <a href="{{ route('admin.books.index') }}" 
+                    <a href="{{ route('authors.books.index') }}" 
                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                         Batal
                     </a>
