@@ -40,4 +40,16 @@ class AuthorProfile extends Model
     {
         return $this->is_verified ? '✅ Verified Author' : null;
     }
+
+    //  Untuk mendapatkan buku yang sudah published
+    public function getPublishedBooksAttribute()
+    {
+        return $this->books()->published()->get();
+    }
+
+    // Untuk mendapatkan total buku published
+    public function getPublishedBooksCountAttribute()
+    {
+        return $this->books()->published()->count();
+    }
 }

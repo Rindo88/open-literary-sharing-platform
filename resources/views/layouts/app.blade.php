@@ -333,65 +333,88 @@
             <div class="flex justify-between items-center h-16 lg:h-20">
                 <!-- Logo & Brand -->
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('home.index') }}" class="flex items-center space-x-3 group">
-                        <div class="relative">
-                            <svg class="h-8 w-8 lg:h-10 lg:w-10 text-blue-600 logo-icon" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h1
-                                class="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                LitShare
-                            </h1>
-                            <p class="text-xs text-gray-500 hidden lg:block">Multi-Sharing Library</p>
-                        </div>
+                    @if (Route::is('landing'))
+                        <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
+                        @else
+                            <a href="{{ route('home.index') }}" class="flex items-center space-x-3 group">
+                    @endif
+                    <div class="relative">
+                        <svg class="h-8 w-8 lg:h-10 lg:w-10 text-blue-600 logo-icon" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1
+                            class="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            LitShare
+                        </h1>
+                        <p class="text-xs text-gray-500 hidden lg:block">Multi-Sharing Library</p>
+                    </div>
                     </a>
                 </div>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <!-- Navigation Links -->
-                    @php
-                        $isLanding = Route::is('landing') || Route::is('portfolio') || Route::is('portfolio.*');
-                    @endphp
-                    @if ($isLanding)
+                    @if (Route::is('landing'))
+                        <!-- NAVBAR UNTUK LANDING PAGE -->
                         <div class="flex items-center space-x-6">
-                            <a href="{{ route('landing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
-                            <a href="{{ route('landing') }}#tentang" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Tentang</a>
-                            <a href="{{ route('landing') }}#kontak" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Kontak</a>
-                            <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
-                            @stack('navbar_links')
+                            <a href="#tentang"
+                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium scroll-link">Tentang</a>
+                            <a href="#kontak"
+                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium scroll-link">Kontak</a>
+                            <a href="{{ route('home.index') }}"
+                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                            <a href="#bagikan"
+                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium scroll-link">Bagikan
+                                Karya</a>
                         </div>
                     @else
+                        <!-- NAVBAR UNTUK SEMUA HALAMAN LAIN -->
                         @auth
                             <div class="flex items-center space-x-6">
-                                <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Dashboard</a>
-                                <a href="{{ route('books.my-books') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Buku Saya</a>
-                                <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                                <a href="{{ route('dashboard') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                                <a href="{{ route('books.my-books') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium {{ request()->routeIs('books.my-books') ? 'active' : '' }}">Buku
+                                    Saya</a>
+                                <a href="{{ route('home.index') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium {{ request()->routeIs('home.index') ? 'active' : '' }}">Katalog</a>
+
+                                <!-- TAMBAHKAN DROPDOWN ATAU LINK UNTUK AUTHOR -->
+                                @if (auth()->user()->authorProfile)
+                                    <a href="{{ route('authors.dashboard') }}"
+                                        class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium {{ request()->routeIs('authors.*') ? 'active' : '' }}">Dashboard
+                                        Penulis</a>
+                                @endif
                             </div>
                         @else
                             <div class="flex items-center space-x-6">
-                                <a href="{{ route('home.index') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Katalog</a>
+                                <a href="{{ route('home.index') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium {{ request()->routeIs('home.index') ? 'active' : '' }}">Katalog</a>
+                                <a href="{{ route('landing') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Beranda</a>
                             </div>
                         @endauth
                     @endif
 
-                    <!-- Search Bar -->
-                    <div class="hidden lg:block">
-                        <div class="relative">
-                            <input type="text" placeholder="Cari buku..." id="desktop-search"
-                                class="w-64 px-4 py-2 pl-10 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300">
-                            <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                    <!-- Search Bar (Tampilkan di semua halaman kecuali landing) -->
+                    @if (!Route::is('landing'))
+                        <div class="hidden lg:block">
+                            <div class="relative">
+                                <input type="text" placeholder="Cari buku..." id="desktop-search"
+                                    class="w-64 px-4 py-2 pl-10 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300">
+                                <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
+                    @endif
+
                     <!-- User Section -->
                     @auth
                         <div class="flex items-center space-x-4">
@@ -429,9 +452,12 @@
                                         <div class="px-4 py-3 border-b border-gray-100">
                                             <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
                                             <p class="text-sm text-gray-500 truncate">{{ auth()->user()->email }}</p>
-                                            @if (auth()->user()->role === 'admin')
+                                            @if (auth()->user()->authorProfile)
                                                 <span
-                                                    class="inline-block mt-1 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Admin</span>
+                                                    class="inline-block mt-1 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Penulis</span>
+                                            @else
+                                                <span
+                                                    class="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Pembaca</span>
                                             @endif
                                         </div>
                                         <a href="{{ route('profile.show') }}"
@@ -444,16 +470,18 @@
                                             Profil Saya
                                         </a>
 
-                                        <a href="{{ route('authors.dashboard') }}"
-                                            class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
-                                            <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                            </svg>
-                                            Dashboard Penulis
-                                        </a>
-                                        
+                                        @if (auth()->user()->authorProfile)
+                                            <a href="{{ route('authors.dashboard') }}"
+                                                class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                                                <svg class="w-4 h-4 mr-3 text-gray-400" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                </svg>
+                                                Dashboard Penulis
+                                            </a>
+                                        @endif
+
                                         <div class="border-t border-gray-100 mt-2 pt-2">
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf
@@ -476,28 +504,31 @@
                     @else
                         <!-- Login / Register Buttons for Guests -->
                         <div class="flex items-center space-x-3">
-                            <a href="{{ route('login.show') }}"
-                                class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                                Login
-                            </a>
-                            <a href="{{ route('register.show') }}"
-                                class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-200">
-                                Register
-                            </a>
+                            @if (Route::is('landing'))
+                                <a href="{{ route('login') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                                    Login
+                                </a>
+                                <a href="{{ route('register') }}"
+                                    class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-200">
+                                    Register
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}"
+                                    class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                                    Login
+                                </a>
+                                <a href="{{ route('register') }}"
+                                    class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-200">
+                                    Register
+                                </a>
+                            @endif
                         </div>
                     @endauth
                 </div>
 
                 <!-- Mobile Menu Button - ALWAYS VISIBLE -->
                 <div class="md:hidden flex items-center space-x-2">
-                    <!-- Mobile search button
-                    <button class="p-2 text-gray-400 hover:text-gray-500 transition-colors duration-200">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </button> -->
-
-                    <!-- Mobile menu button -->
                     <button type="button"
                         class="p-2 rounded-lg text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all duration-200 border border-gray-200"
                         id="mobile-menu-button">
@@ -518,31 +549,31 @@
             <div class="hidden md:hidden absolute left-0 right-0 top-full shadow-xl rounded-b-2xl bg-white/98 backdrop-blur-sm border-t border-gray-100"
                 id="mobile-menu">
                 <div class="px-4 py-6 space-y-4">
-                    <!-- Mobile search -->
-                    <div class="relative mb-4">
-                        <input type="text" placeholder="Cari buku..." id="mobile-search"
-                            class="w-full px-4 py-3 pl-10 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 backdrop-blur-sm">
-                        <svg class="absolute left-3 top-3.5 h-4 w-4 text-gray-400" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
+                    <!-- Mobile search (hanya untuk non-landing) -->
+                    @if (!Route::is('landing'))
+                        <div class="relative mb-4">
+                            <input type="text" placeholder="Cari buku..." id="mobile-search"
+                                class="w-full px-4 py-3 pl-10 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 backdrop-blur-sm">
+                            <svg class="absolute left-3 top-3.5 h-4 w-4 text-gray-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    @endif
 
-                    <!-- Navigation Links -->
-                    @php
-                        $isLanding = Route::is('landing') || Route::is('portfolio') || Route::is('portfolio.*');
-                    @endphp
-                    @if ($isLanding)
-                        <a href="{{ route('landing') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Home</a>
-                        <a href="{{ route('landing') }}#tentang"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Tentang</a>
-                        <a href="{{ route('landing') }}#kontak"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Kontak</a>
+                    @if (Route::is('landing'))
+                        <!-- Mobile menu untuk landing page -->
+                        <a href="#tentang"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item scroll-link">Tentang</a>
+                        <a href="#kontak"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item scroll-link">Kontak</a>
                         <a href="{{ route('home.index') }}"
-                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Katalog Buku</a>
-                        @stack('navbar_links')
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Katalog</a>
+                        <a href="#bagikan"
+                            class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item scroll-link">Bagikan
+                            Karya</a>
+
                         @guest
                             <a href="{{ route('login') }}"
                                 class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">Login</a>
@@ -550,6 +581,7 @@
                                 class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 mobile-menu-item">Register</a>
                         @endguest
                     @else
+                        <!-- Mobile menu untuk halaman lain -->
                         @auth
                             <a href="{{ route('dashboard') }}"
                                 class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
@@ -575,6 +607,17 @@
                                 </svg>
                                 Katalog Buku
                             </a>
+
+                            @if (auth()->user()->role === 'author' || auth()->user()->is_author)
+                                <a href="{{ route('authors.dashboard') }}"
+                                    class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    Dashboard Penulis
+                                </a>
+                            @endif
                         @else
                             <a href="{{ route('home.index') }}"
                                 class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
@@ -583,6 +626,14 @@
                                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                 </svg>
                                 Katalog Buku
+                            </a>
+                            <a href="{{ route('landing') }}"
+                                class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Beranda
                             </a>
                             <a href="{{ route('login') }}"
                                 class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 mobile-menu-item">
@@ -633,6 +684,19 @@
                                 </svg>
                                 Profil Saya
                             </a>
+
+                            @if (auth()->user()->role === 'author' || auth()->user()->is_author)
+                                <a href="{{ route('authors.dashboard') }}"
+                                    class="flex items-center px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200 mobile-menu-item">
+                                    <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    Dashboard Penulis
+                                </a>
+                            @endif
+
                             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                                 @csrf
                                 <button type="submit"
@@ -852,8 +916,44 @@
                 }, 1000);
             }
         });
-    </script>
 
+        // Smooth scroll for landing page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're on landing page
+            const isLandingPage = window.location.pathname === '/' ||
+                window.location.pathname === '/landing' ||
+                window.location.hash.includes('#');
+
+            if (isLandingPage) {
+                // Smooth scroll untuk link dengan hash
+                document.querySelectorAll('.scroll-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+
+                            // Close mobile menu jika terbuka
+                            const mobileMenu = document.getElementById('mobile-menu');
+                            const mobileMenuButton = document.getElementById('mobile-menu-button');
+
+                            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                                mobileMenu.classList.add('hidden');
+                                mobileMenuButton.classList.remove('hamburger-open');
+                                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

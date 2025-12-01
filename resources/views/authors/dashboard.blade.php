@@ -110,7 +110,7 @@
                                 @endif
                                 <div class="ml-4">
                                     <h4 class="text-sm font-medium text-gray-900">{{ $book->title }}</h4>
-                                    <p class="text-sm text-gray-500">{{ $book->author }}</p>
+                                    <p class="text-sm text-gray-500">{{ $book->author->pen_name }}</p>
                                 </div>
                             </div>
                             <div class="text-sm text-gray-500">

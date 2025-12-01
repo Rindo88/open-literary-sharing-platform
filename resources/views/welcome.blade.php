@@ -154,10 +154,10 @@
             </div>
 
             <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#" class="btn-primary inline-flex items-center justify-center px-6 py-3 rounded-lg text-white text-sm sm:text-base disabled:opacity-70"
+                <a href="{{ route('authors.books.create') }}" class="btn-primary inline-flex items-center justify-center px-6 py-3 rounded-lg text-white text-sm sm:text-base disabled:opacity-70"
                    aria-disabled="true"
                    title="Fitur unggah akan segera hadir">
-                    Mulai Bagikan Karya (Coming Soon)
+                    Mulai Bagikan Karya
                 </a>
                 <a href="{{ route('home.index') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50 text-sm sm:text-base">
                     Lihat Karya Komunitas

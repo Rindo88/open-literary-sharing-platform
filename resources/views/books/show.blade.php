@@ -214,7 +214,7 @@
                                 {!! $isWishlist ? '❤️' : '🤍' !!}
                             </button>
                         </form>
-                        <p class="text-lg sm:text-xl text-gray-600 mb-3">oleh <a href="{{ route('authors.profile', $book->author) }}" class="text-blue-400 underline font-bold">{{ $book->author->display_name }}</a></p>
+                        <p class="text-lg sm:text-xl text-gray-600 mb-3">oleh <a href="{{ route('authors.show', $book->author) }}" class="text-blue-400 underline font-bold">{{ $book->author->display_name }}</a></p>
                         <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                             @foreach ($categoryList as $category)
                                 <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-xs">

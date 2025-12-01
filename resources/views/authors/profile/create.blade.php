@@ -35,7 +35,7 @@
             </div>
 
             <!-- Form Content -->
-            <form action="{{ route('author.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+            <form action="{{ route('authors.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
                 @csrf
 
                 <!-- Nama Pena -->

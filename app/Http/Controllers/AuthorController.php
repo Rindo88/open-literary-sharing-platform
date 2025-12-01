@@ -38,7 +38,7 @@ class AuthorController extends Controller
         $authorProfile = AuthorProfile::where('user_id', auth()->user()->id)->first();
 
         if (!$authorProfile) {
-            return redirect()->route('author.create')->with('error', 'Profil penulis belum dibuat.');
+            return redirect()->route('authors.create')->with('error', 'Profil penulis belum dibuat.');
         }
 
         return view('authors.profile.index', compact('authorProfile'));

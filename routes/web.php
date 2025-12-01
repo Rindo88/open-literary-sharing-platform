@@ -1,9 +1,7 @@
     <?php
 
     use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\AdminController;
     use App\Http\Controllers\AuthController;
-    use App\Http\Controllers\AdminCategoryController;
     use App\Http\Controllers\AuthorController;
     use App\Http\Controllers\BookController;
     use App\Http\Controllers\BookReaderController;
@@ -27,9 +25,9 @@
     Route::get('/books/{slug}/read', [BookReaderController::class, 'show'])->name('books.read');
 
     // Author profile route - lebih spesifik
-    Route::get('/author/{id}', [AuthorController::class, 'show'])->name('author.show');
-    Route::get('/authors/create', [AuthorController::class, 'create'])->name('author.create');
-    Route::post('authors/create', [AuthorController::class, 'store'])->name('author.store');
+    Route::get('/authors/profile/{id}', [AuthorController::class, 'show'])->name('authors.show');
+    Route::get('/authors/create', [AuthorController::class, 'create'])->name('authors.create');
+    Route::post('authors/create', [AuthorController::class, 'store'])->name('authors.store');
 
 
     // Protected routes - HANYA untuk user yang login
@@ -90,10 +88,10 @@
 
         // Author profile management - untuk user yang login
         Route::prefix('authors')->middleware('profile.author')->group(function () {
+            Route::get('/', [AuthorController::class, 'dashboard'])->name('authors.dashboard');
             Route::get('/profile', [AuthorController::class, 'index'])->name('authors.profile');
             Route::get('/edit', [AuthorController::class, 'edit'])->name('authors.profile.edit');
             Route::put('/update', [AuthorController::class, 'update'])->name('authors.profile.update');
-            Route::get('/', [AuthorController::class, 'dashboard'])->name('authors.dashboard');
             Route::get('/books', [AuthorController::class, 'manageBooks'])->name('authors.books.index');
             Route::post('/books/create', [AuthorController::class, 'storeBook'])->name('authors.books.store');
             Route::get('/books/create', [AuthorController::class, 'createBook'])->name('authors.books.create');
@@ -102,25 +100,4 @@
             Route::delete('/books/{book}', [AuthorController::class, 'destroyBook'])->name('authors.books.destroy');
             Route::get('/reports', [AuthorController::class, 'reports'])->name('authors.reports.index');
         });
-    });
-
-    // Admin routes
-    Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-        Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('/books', [AdminController::class, 'manageBooks'])->name('admin.books.index');
-        Route::get('/books/create', [AdminController::class, 'createBook'])->name('admin.books.create');
-        Route::post('/books', [AdminController::class, 'storeBook'])->name('admin.books.store');
-        Route::get('/books/{book}/edit', [AdminController::class, 'editBook'])->name('admin.books.edit');
-        Route::put('/books/{book}', [AdminController::class, 'updateBook'])->name('admin.books.update');
-        Route::delete('/books/{book}', [AdminController::class, 'destroyBook'])->name('admin.books.destroy');
-        Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users.index');
-        Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
-
-        // Categories routes
-        Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
-        Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
-        Route::post('/categories', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
-        Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('admin.categories.edit');
-        Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
-        Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
     });
